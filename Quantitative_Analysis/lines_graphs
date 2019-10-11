@@ -9,18 +9,21 @@ import pandas_datareader as pdr
 start = datetime.datetime(2018,10,1)
 end = datetime.datetime(2019, 10,11)
 
+#yahooから株のデータを読み込み
 df = pdr.DataReader('7729.T', 'yahoo', start, end)
 
 df.index = pd.to_datetime(df.index)
 
-
+#移動平均線の計算
 closed = np.array(df['Close'])
+
 sma_5 = talib.SMA(closed,5)
 #sma_10 = talib.SMA(closed, 10)
 sma_20 = talib.SMA(closed, 20)
 #sma_30 = talib.SMA(closed, 30)
 sma_60 = talib.SMA(closed, 60)
 
+#ストキャスティクス
 df['K'], df['D'] = talib.STOCH(df['High'], df['Low'], df['Close'])
 df['J']= 3*df['D']-2*df['K']
 #df['K'].fillna(value=0, inplace=True)
@@ -32,7 +35,7 @@ fig = plt.figure(figsize=(30,15))
 ax = fig.add_axes([0,0.40,1,0.3])
 ax2 = fig.add_axes([0,0.2,1,0.2])
 ax3 = fig.add_axes([0,0,1,0.2])
-
+#ローソク足チャート
 mpf.candlestick2_ochl(ax, df['Open'], df['Close'], df['High'],
                       df['Low'], width=0.6, colorup='r', colordown='g', alpha=0.5)
 
